@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29123.88
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.34929.205
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epi.Web", "Epi.Web\Epi.Web.csproj", "{91794FFF-48C0-414F-933E-34412A29EEAC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -31,13 +31,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epi.Web.CheckCodeEngine", "Epi.Web.CheckCodeEngine\Epi.Web.CheckCodeEngine.csproj", "{6B084882-EF4F-4CF0-85B1-1E8C357AE822}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{95D9CE06-6A23-4D90-890E-A7E0BC7F8B3C}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epi.Web.WCF.SurveyService", "SurveyManagerInterface\Epi.Web.WCF.SurveyService.csproj", "{31F91938-2997-4650-8D36-71C845F1071D}"
 EndProject
@@ -226,7 +219,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {90BC8E71-8799-4A31-90F1-9C35C40CF1F0}
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
+		SolutionGuid = {90BC8E71-8799-4A31-90F1-9C35C40CF1F0}
 	EndGlobalSection
 EndGlobal
