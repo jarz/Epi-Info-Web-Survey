@@ -15,7 +15,9 @@ Access to a MS SQL Server database with write permissions.
 
 <H3>Building the Project - Summary</H3>
 
-After installing Visual Studio 2022 Community Edition, follow along after cloning and opening the solution to install Windows Connection Framework (WCF), the .NET Desktop Development workload, and the 4.6.1 Developer Pack.
+The production projects target .NET Framework 4.8. Install Visual Studio 2022 (or Build Tools) with the .NET desktop and web build workloads, WCF tooling, and the 4.8 targeting pack, then restore NuGet packages before compiling.
+
+When using the multi-repository Epi Info workspace, see [the workspace build instructions](https://github.com/jarz/Epi-Info-Workspace/blob/main/BUILDING.md). Its build runner uses full-framework MSBuild and keeps compiled outputs separate from checked-in binaries. Compilation does not validate deployment, database connectivity, or the missing root web.config.
 
 <H3>Building the Project</H3>
 
