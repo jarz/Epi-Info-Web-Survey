@@ -41,10 +41,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Epi.Web.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Epi.Web\bin\Epi.Web.Interfaces.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -70,6 +66,10 @@
     <Compile Include="ManagerService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Epi.Web.Interfaces\Epi.Web.Interfaces.csproj">
+      <Project>{b8af69bd-3ce1-4aa5-875d-3fb87c7fce44}</Project>
+      <Name>Epi.Web.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EIWS_BLL_Core\Epi.Web.BLL.csproj">
       <Project>{d49b7a21-644b-49d7-9a5d-387bf31eafe5}</Project>
       <Name>Epi.Web.BLL</Name>

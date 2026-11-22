@@ -40,10 +40,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Epi.Web.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Epi.Web\bin\Epi.Web.Interfaces.dll</HintPath>
-    </Reference>
     <Reference Include="EPPlus">
       <HintPath>..\Epi.Web\bin\EPPlus.dll</HintPath>
     </Reference>
@@ -85,6 +81,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Epi.Web.Interfaces\Epi.Web.Interfaces.csproj">
+      <Project>{b8af69bd-3ce1-4aa5-875d-3fb87c7fce44}</Project>
+      <Name>Epi.Web.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Epi.Web.Common\Epi.Web.Common.csproj">
       <Project>{6e2f059b-c1cd-401f-8a63-dc2933cfb0d8}</Project>
       <Name>Epi.Web.Common</Name>
