@@ -145,7 +145,9 @@ namespace Epi.Web.KeyRotation
             }
             else if (legacy)
             {
-                if (configured != null && !ConfigRotator.SameKeys(configured, LegacyKeys.ConnectionStringKeys))
+                if (configured != null &&
+                    !ConfigRotator.SameKeys(configured, LegacyKeys.ConnectionStringKeys) &&
+                    !ConfigRotator.SameKeys(configured, newKeys.ConnectionStringKeys))
                 {
                     throw new KeyRotationException(
                         "This configuration sets its own key settings, so the built-in keys don't apply. Omit --legacy-built-in-keys.");
@@ -166,8 +168,25 @@ namespace Epi.Web.KeyRotation
 
             if (ConfigRotator.SameKeys(oldKeys, newKeys.ConnectionStringKeys))
             {
+                if (configured != null && !ConfigRotator.SameKeys(configured, oldKeys))
+                {
+                    throw new KeyRotationException("--old-keys holds the new key material. Pass the keys the configuration uses now.");
+                }
+
                 Cryptography.ValidateConfiguration(ConfigRotator.ReadAppSettings(config));
+                OrganizationKeyPlan current = null;
+                if (database != null)
+                {
+                    string connection = ConfigRotator.GetDatabaseConnectionString(config, database, oldKeys, oldKeys);
+                    current = SqlOrganizationKeyRotator.Check(connection, oldKeys);
+                }
+
                 output.WriteLine(configPath + " already uses the new key material and validates; nothing to do.");
+                if (current != null)
+                {
+                    output.WriteLine("  dbo.Organization: {0} already use the new keys, {1} empty", current.AlreadyCurrent, current.Empty);
+                }
+
                 return 0;
             }
 

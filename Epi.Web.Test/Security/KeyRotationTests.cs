@@ -127,6 +127,57 @@ namespace Epi.Web.MVC.Test.Security
         }
 
         [Test]
+        public void Rotate_refuses_a_connection_string_encrypted_with_unknown_keys()
+        {
+            XmlDocument config = Load(LegacyConfigXml(KeyMaterial.Generate(), false));
+
+            var ex = Assert.Throws<KeyRotationException>(() => ConfigRotator.Rotate(config, KeyMaterial.Generate(), KeyFile.Generate()));
+
+            Assert.That(ex.Message, Does.Contain("EIWSEntities"));
+        }
+
+        [Test]
+        public void Rotate_command_refuses_old_keys_that_hold_the_new_key_material()
+        {
+            string configPath = Path.Combine(directory, "Web.config");
+            string keyPath = Path.Combine(directory, "new.keys");
+            string oldKeyPath = Path.Combine(directory, "old.keys");
+            File.WriteAllText(configPath, LegacyConfigXml(KeyMaterial.Generate(), true));
+            byte[] original = File.ReadAllBytes(configPath);
+            Run("generate", "--out", keyPath);
+            KeyMaterial newKeys = KeyFile.ReadNew(keyPath).ConnectionStringKeys;
+            File.WriteAllLines(oldKeyPath, new[]
+            {
+                KeyMaterial.PassphraseSetting + "=" + newKeys.Passphrase,
+                KeyMaterial.SaltSetting + "=" + newKeys.Salt,
+                KeyMaterial.VectorSetting + "=" + newKeys.Vector,
+            });
+
+            CommandResult result = Run("rotate", "--config", configPath, "--new-keys", keyPath, "--old-keys", oldKeyPath, "--apply");
+
+            Assert.That(result.ExitCode, Is.EqualTo(1));
+            Assert.That(result.Error, Does.Contain("--old-keys"));
+            Assert.That(File.ReadAllBytes(configPath), Is.EqualTo(original));
+        }
+
+        [Test]
+        public void Rotate_command_accepts_built_in_keys_again_once_the_configuration_uses_the_new_keys()
+        {
+            string configPath = Path.Combine(directory, "Web.config");
+            string keyPath = Path.Combine(directory, "new.keys");
+            File.WriteAllText(configPath, LegacyConfigXml(LegacyKeys.ConnectionStringKeys, false));
+            Run("generate", "--out", keyPath);
+            Assert.That(Run("rotate", "--config", configPath, "--new-keys", keyPath, "--legacy-built-in-keys", "--apply").ExitCode, Is.EqualTo(0));
+            byte[] rotated = File.ReadAllBytes(configPath);
+
+            CommandResult result = Run("rotate", "--config", configPath, "--new-keys", keyPath, "--legacy-built-in-keys");
+
+            Assert.That(result.ExitCode, Is.EqualTo(0), result.Error);
+            Assert.That(result.Output, Does.Contain("EIWSEntities: already uses the new keys"));
+            Assert.That(File.ReadAllBytes(configPath), Is.EqualTo(rotated));
+        }
+
+        [Test]
         public void Rotate_command_is_a_dry_run_until_apply_and_never_prints_secrets()
         {
             string configPath = Path.Combine(directory, "Web.config");
@@ -231,6 +282,29 @@ namespace Epi.Web.MVC.Test.Security
             OrganizationKeyPlan plan = OrganizationKeyPlan.Create(new[] { row }, oldKeys, newKeys);
 
             Assert.Throws<KeyRotationException>(() => plan.Verify(new[] { row }, newKeys));
+        }
+
+        [Test]
+        public void Plan_check_counts_rows_that_use_the_keys_and_rejects_any_that_do_not()
+        {
+            KeyMaterial keys = KeyMaterial.Generate();
+            var current = new List<OrganizationKeyRow>
+            {
+                new OrganizationKeyRow(1, Cryptography.Encrypt("a1b2c3d4-0000-4000-8000-000000000001", keys)),
+                new OrganizationKeyRow(2, null),
+            };
+            var stale = new List<OrganizationKeyRow>(current)
+            {
+                new OrganizationKeyRow(3, Cryptography.Encrypt("a1b2c3d4-0000-4000-8000-000000000003", LegacyKeys.ConnectionStringKeys)),
+            };
+
+            OrganizationKeyPlan plan = OrganizationKeyPlan.CheckCurrent(current, keys);
+            var ex = Assert.Throws<KeyRotationException>(() => OrganizationKeyPlan.CheckCurrent(stale, keys));
+
+            Assert.That(plan.Updates, Is.Empty);
+            Assert.That(plan.AlreadyCurrent, Is.EqualTo(1));
+            Assert.That(plan.Empty, Is.EqualTo(1));
+            Assert.That(ex.Message, Does.Contain("OrganizationId 3").And.Contain("--old-keys"));
         }
 
         private static CommandResult Run(params string[] args)

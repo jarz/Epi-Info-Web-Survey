@@ -54,10 +54,13 @@ on behalf of other organizations.
 
 Organization keys held by users don't change; only their stored encryption does. If the database step
 succeeded but the configuration wasn't written, run the same command again: rows that already use the new
-keys are recognized and left alone. The tool refuses to run when a row can't be decrypted with either key
-set, when a section uses `configSource`, or when `--legacy-built-in-keys` is given for a configuration that
-sets its own keys. Plain-text connection strings (for example `ApplicationServices`) are reported and left
-unchanged.
+keys are recognized and left alone. If a configuration was rotated without `--database`, re-running with
+`--database` checks every organization key against the new keys and reports what to do; pass the previous
+keys with `--old-keys` (or `--legacy-built-in-keys`) to re-encrypt rows that still use them. The tool
+refuses to run when a row or an encrypted connection string can't be decrypted with either key set, when a
+section uses `configSource`, or when `--legacy-built-in-keys` is given for a configuration that sets keys of
+its own other than the new ones. Plain-text connection strings (for example `ApplicationServices`) are
+reported and left unchanged.
 
 `AdminKey` is replaced with the key file's `AdminKeyGuid`. To keep the existing admin key, remove
 `AdminKeyGuid` from the key file; a publicly known admin key is never kept. Token settings are replaced only

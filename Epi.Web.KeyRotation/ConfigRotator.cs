@@ -254,10 +254,33 @@ namespace Epi.Web.KeyRotation
                 {
                     report.Add("connectionStrings/" + name + ": already uses the new keys");
                 }
+                else if (LooksEncrypted(value))
+                {
+                    throw new KeyRotationException(
+                        "Connection string " + name + " looks encrypted but can't be decrypted with the old or new keys. " +
+                        "Check --old-keys or the deployment's key settings. Nothing was written.");
+                }
                 else
                 {
                     report.Add("connectionStrings/" + name + ": not encrypted with the old keys (plain text?), unchanged");
                 }
+            }
+        }
+
+        /// <summary>
+        /// True for Base64 that decodes to whole AES blocks. Plain-text connection strings contain ';', '=' or other
+        /// characters where Base64 doesn't allow them, so they never match.
+        /// </summary>
+        private static bool LooksEncrypted(string value)
+        {
+            try
+            {
+                byte[] bytes = Convert.FromBase64String(value.Trim());
+                return bytes.Length > 0 && bytes.Length % 16 == 0;
+            }
+            catch (FormatException)
+            {
+                return false;
             }
         }
 

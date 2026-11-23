@@ -93,6 +93,36 @@ namespace Epi.Web.KeyRotation
         }
 
         /// <summary>
+        /// Confirms every row already decrypts with <paramref name="keys"/>; throws if any row doesn't.
+        /// </summary>
+        public static OrganizationKeyPlan CheckCurrent(IEnumerable<OrganizationKeyRow> rows, KeyMaterial keys)
+        {
+            int current = 0;
+            int empty = 0;
+            foreach (OrganizationKeyRow row in rows)
+            {
+                string plainText;
+                if (string.IsNullOrWhiteSpace(row.OrganizationKey))
+                {
+                    empty++;
+                }
+                else if (TryDecryptGuidText(row.OrganizationKey, keys, out plainText))
+                {
+                    current++;
+                }
+                else
+                {
+                    throw new KeyRotationException(
+                        "OrganizationId " + row.OrganizationId + ": OrganizationKey doesn't decrypt with the new keys. " +
+                        "If the database wasn't rotated yet, pass the previous keys with --old-keys <file> " +
+                        "(or --legacy-built-in-keys). Nothing was changed.");
+                }
+            }
+
+            return new OrganizationKeyPlan(new List<OrganizationKeyUpdate>(), current, empty);
+        }
+
+        /// <summary>
         /// Confirms every updated row now decrypts with the new keys to its original plaintext.
         /// </summary>
         public void Verify(IEnumerable<OrganizationKeyRow> rowsAfterUpdate, KeyMaterial newKeys)

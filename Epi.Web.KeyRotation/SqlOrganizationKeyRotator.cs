@@ -55,6 +55,18 @@ namespace Epi.Web.KeyRotation
             }
         }
 
+        /// <summary>
+        /// Confirms every row already uses <paramref name="keys"/> without changing anything.
+        /// </summary>
+        public static OrganizationKeyPlan Check(string connectionString, KeyMaterial keys)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                return OrganizationKeyPlan.CheckCurrent(ReadRows(connection, null), keys);
+            }
+        }
+
         private static List<OrganizationKeyRow> ReadRows(SqlConnection connection, SqlTransaction transaction)
         {
             var rows = new List<OrganizationKeyRow>();
