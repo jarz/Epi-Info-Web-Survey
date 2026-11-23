@@ -76,31 +76,10 @@ namespace Epi.Web.BLL
         //Validate Admin
         public static bool ValidateAdmin(string AdminKeyToValidate)
         {
-            string AdminKey = ConfigurationManager.AppSettings["AdminKey"];
-            string EncryptedAdminKey = Epi.Web.Common.Security.Cryptography.Decrypt(AdminKey);
-
-            bool ISValidUser = false;
-
-            if (!string.IsNullOrEmpty(EncryptedAdminKey) && !string.IsNullOrEmpty(AdminKeyToValidate))
-            {
-
-                if (EncryptedAdminKey == AdminKeyToValidate)
-                {
-                    ISValidUser = true;
-
-
-                }                                 
-                else if (EncryptedAdminKey.ToLower() == AdminKeyToValidate.ToLower())
-                {
-                    ISValidUser = true;
-                }
-               
-                else
-                {
-                    ISValidUser = false;
-                }
-            }
-            return ISValidUser;
+            Guid? configuredKey = Epi.Web.Common.Security.AdminKey.Read(
+                ConfigurationManager.AppSettings,
+                Epi.Web.Common.Security.Cryptography.ConfiguredKeyMaterial);
+            return Epi.Web.Common.Security.AdminKey.Matches(AdminKeyToValidate, configuredKey);
         }
         public static List<FormsHierarchyBO> MapToFormHierarchyBOs(string RootId, List<SurveyInfoBO> SurveyInfoBOList)
         {

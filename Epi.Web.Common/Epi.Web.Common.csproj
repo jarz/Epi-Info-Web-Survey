@@ -163,7 +163,10 @@
     <Compile Include="ObjectMapping\Mapper.cs" />
     <Compile Include="Message\OrganizationResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\AdminKey.cs" />
     <Compile Include="Security\Cryptography.cs" />
+    <Compile Include="Security\KeyMaterial.cs" />
+    <Compile Include="Security\KnownPublicValues.cs" />
     <Compile Include="Security\PasswordGenerator.cs" />
     <Compile Include="Email\EmailHandler.cs" />
     <Compile Include="SurveyDashboardBO.cs" />

@@ -36,6 +36,7 @@ namespace Epi.Web.MVC
 
         protected void Application_Start()
         {
+            Epi.Web.Common.Security.Cryptography.ValidateConfiguration();
             AreaRegistration.RegisterAllAreas();
             if (ConfigurationManager.AppSettings["SurveyAPIIntegration"] != null && ConfigurationManager.AppSettings["SurveyAPIIntegration"].ToString().ToLower() == "true")
             {
