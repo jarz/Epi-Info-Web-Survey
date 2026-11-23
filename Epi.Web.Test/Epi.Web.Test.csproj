@@ -70,6 +70,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\When_Selecting_A_Display_Mode.cs" />
     <Compile Include="Controllers\FinalController_Tests\When_Submit_Survey.cs" />
     <Compile Include="Controllers\HomeController_Tests\When_Arrive_At_Application.cs" />
     <Compile Include="Controllers\HomeController_Tests\When_Click_Begin_Survey_Button.cs" />
@@ -82,6 +83,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\FormProviderTests.cs" />
     <Compile Include="Utility\SurveyHelperTests.cs" />
+    <Compile Include="Views\ViewAssetReferences.cs" />
+    <Compile Include="Views\When_Layouts_Load_Browser_Assets.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Epi.DynamicForms.Core\Epi.Web.DynamicForms.Core.csproj">
