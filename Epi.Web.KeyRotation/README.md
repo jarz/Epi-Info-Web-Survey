@@ -30,7 +30,8 @@ on behalf of other organizations.
 
 ## Existing deployment
 
-1. Back up the database and every `Web.config` that shares it (the survey site and the publishing service).
+1. Back up the database and every `Web.config` that shares it: the survey site, the publishing service and,
+   if deployed, the Epi Info Survey API (which uses the same key settings and organization keys).
 2. Stop the application pools for those sites.
 3. Generate key material once: `.\Epi.Web.KeyRotation.exe generate --out D:\secure\eiws.keys`.
 4. Dry run the site whose configuration holds the database connection string, once per database:
@@ -47,7 +48,8 @@ on behalf of other organizations.
 5. Re-run the same command with `--apply`. The organization keys are re-encrypted in one transaction and
    checked before commit; the configuration is written afterwards, with a backup named
    `Web.<timestamp>.keyrotation-backup.config` next to it.
-6. Rotate every other configuration of the deployment with the same key file, without `--database`.
+6. Rotate every other configuration of the deployment with the same key file, without `--database`. Survey
+   API configurations set their own key settings, so omit `--legacy-built-in-keys` for them.
 7. Start the application pools and check that the sites work. Then delete the backups and the key file.
 
 Organization keys held by users don't change; only their stored encryption does. If the database step
