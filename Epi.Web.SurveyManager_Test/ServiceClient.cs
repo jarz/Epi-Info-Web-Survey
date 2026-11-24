@@ -11,6 +11,17 @@ namespace Epi.Web.SurveyManager.Client
 {
     public class ServiceClient
     {
+        private static void ConfigureServiceAuthorization(System.ServiceModel.Description.ServiceEndpoint endpoint)
+        {
+            if (endpoint.Address == null || endpoint.Address.Uri == null ||
+                !string.Equals(endpoint.Address.Uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Survey Manager service endpoints must use HTTPS.");
+            }
+
+            endpoint.EndpointBehaviors.Add(new Epi.Web.Common.Security.DataServiceClientAuthorizationBehavior(
+                ConfigurationManager.AppSettings[Epi.Web.Common.Security.DataServiceAuthentication.SharedKeySetting]));
+        }
 
         public enum Version
             {
@@ -86,11 +97,6 @@ namespace Epi.Web.SurveyManager.Client
                    
 
                     result = new SurveyManagerService.ManagerServiceClient(binding, endpoint);
-                    System.Net.ServicePointManager.ServerCertificateValidationCallback +=
-                        (se, cert, chain, sslerror) =>
-                        {
-                            return true;
-                        };
 
 
                     result.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Impersonation;
@@ -167,11 +173,6 @@ namespace Epi.Web.SurveyManager.Client
                        
 
                         result = new SurveyManagerService.ManagerServiceClient(binding, endpoint);
-                        System.Net.ServicePointManager.ServerCertificateValidationCallback +=
-                        (se, cert, chain, sslerror) =>
-                        {
-                            return true;
-                        };
 
 
                     }
@@ -213,27 +214,13 @@ namespace Epi.Web.SurveyManager.Client
 
                         //}
 
-                        if (endpoint.Uri.Scheme == "http")
+                        if (!string.Equals(endpoint.Uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
                         {
-                            binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.TransportCredentialOnly;
-                            binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.Windows;
-                            binding.Security.Transport.ProxyCredentialType = System.ServiceModel.HttpProxyCredentialType.None;
-                            binding.Security.Transport.Realm = string.Empty;
+                            throw new InvalidOperationException("Survey Manager service endpoints must use HTTPS.");
                         }
-                        else
-                        {
-                            binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
-                            // binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
-                            binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.Windows;
-
-
-                        }
+                        binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                        binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
                         result = new SurveyManagerService.ManagerServiceClient(binding, endpoint);
-                        System.Net.ServicePointManager.ServerCertificateValidationCallback +=
-                        (se, cert, chain, sslerror) =>
-                        {
-                            return true;
-                        };
 
 
                     }
@@ -263,6 +250,7 @@ namespace Epi.Web.SurveyManager.Client
             {
                 throw ex;
             }
+                ConfigureServiceAuthorization(result.Endpoint);
                 return result;
         }
 
@@ -497,27 +485,13 @@ namespace Epi.Web.SurveyManager.Client
 
 
                         //}
-                        if (endpoint.Uri.Scheme == "http")
+                        if (!string.Equals(endpoint.Uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
                         {
-                            binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.TransportCredentialOnly;
-                            binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.Windows;
-                            binding.Security.Transport.ProxyCredentialType = System.ServiceModel.HttpProxyCredentialType.None;
-                            binding.Security.Transport.Realm = string.Empty;
+                            throw new InvalidOperationException("Survey Manager service endpoints must use HTTPS.");
                         }
-                        else
-                        {
-                            binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
-                            // binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
-                            binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.Windows;
-
-
-                        }
+                        binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                        binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
                         result = new SurveyManagerServiceV2.ManagerServiceV2Client(binding, endpoint);
-                        System.Net.ServicePointManager.ServerCertificateValidationCallback +=
-                           (se, cert, chain, sslerror) =>
-                           {
-                               return true;
-                           };
                         }
                     }
                 }
@@ -545,6 +519,7 @@ namespace Epi.Web.SurveyManager.Client
                 {
                 throw ex;
                 }
+            ConfigureServiceAuthorization(result.Endpoint);
             return result;
             }
         public static SurveyManagerServiceV3.ManagerServiceV3Client GetClientV3()
@@ -747,27 +722,13 @@ namespace Epi.Web.SurveyManager.Client
 
 
                         //}
-                        if (endpoint.Uri.Scheme == "http")
+                        if (!string.Equals(endpoint.Uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
                         {
-                            binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.TransportCredentialOnly;
-                            binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.Windows;
-                            binding.Security.Transport.ProxyCredentialType = System.ServiceModel.HttpProxyCredentialType.None;
-                            binding.Security.Transport.Realm = string.Empty;
+                            throw new InvalidOperationException("Survey Manager service endpoints must use HTTPS.");
                         }
-                        else
-                        {
-                            binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
-                            // binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
-                            binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.Windows;
-
-
-                        }
+                        binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                        binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
                         result = new SurveyManagerServiceV3.ManagerServiceV3Client(binding, endpoint);
-                        System.Net.ServicePointManager.ServerCertificateValidationCallback +=
-                           (se, cert, chain, sslerror) =>
-                           {
-                               return true;
-                           };
                     }
                 }
             }
@@ -795,6 +756,7 @@ namespace Epi.Web.SurveyManager.Client
             {
                 throw ex;
             }
+            ConfigureServiceAuthorization(result.Endpoint);
             return result;
         }
 
@@ -1036,27 +998,13 @@ namespace Epi.Web.SurveyManager.Client
 
 
                         //}
-                        if (endpoint.Uri.Scheme == "http")
+                        if (!string.Equals(endpoint.Uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
                         {
-                            binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.TransportCredentialOnly;
-                            binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.Windows;
-                            binding.Security.Transport.ProxyCredentialType = System.ServiceModel.HttpProxyCredentialType.None;
-                            binding.Security.Transport.Realm = string.Empty;
+                            throw new InvalidOperationException("Survey Manager service endpoints must use HTTPS.");
                         }
-                        else
-                        {
-                            binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
-                            // binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
-                            binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.Windows;
-
-
-                        }
+                        binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                        binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
                         result = new SurveyManagerServiceV4.ManagerServiceV4Client(binding, endpoint);
-                        System.Net.ServicePointManager.ServerCertificateValidationCallback +=
-                           (se, cert, chain, sslerror) =>
-                           {
-                               return true;
-                           };
                     }
                 }
             }
@@ -1084,6 +1032,7 @@ namespace Epi.Web.SurveyManager.Client
             {
                 throw ex;
             }
+            ConfigureServiceAuthorization(result.Endpoint);
             return result;
         }
 

@@ -18,6 +18,7 @@ using Epi.Web.Common.Security;
  
 namespace Epi.Web.WCF.SurveyService
 {
+    [DataServiceAuthorization]
     public class ManagerService : IManagerService
     {
 

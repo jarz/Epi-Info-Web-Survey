@@ -16,6 +16,7 @@ using System.Configuration;
 
 namespace Epi.Web.WCF.SurveyService
 {
+    [DataServiceAuthorization]
     public class ManagerServiceV4 : ManagerServiceV3, IManagerServiceV4
     {
        public bool ValidateOrganization(OrganizationRequest Request)

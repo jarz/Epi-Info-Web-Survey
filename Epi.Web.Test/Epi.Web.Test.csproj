@@ -44,6 +44,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -82,6 +83,7 @@
     <Compile Include="Json\SurveyResponseJsonTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AdminKeyTests.cs" />
+    <Compile Include="Security\DataServiceAuthenticationTests.cs" />
     <Compile Include="Security\KeyMaterialTests.cs" />
     <Compile Include="Security\KeyRotationTests.cs" />
     <Compile Include="Utility\FormProviderTests.cs" />
@@ -109,6 +111,10 @@
     <ProjectReference Include="..\Epi.Web\Epi.Web.csproj">
       <Project>{91794FFF-48C0-414F-933E-34412A29EEAC}</Project>
       <Name>Epi.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SurveyManagerInterface\Epi.Web.WCF.SurveyService.csproj">
+      <Project>{31F91938-2997-4650-8D36-71C845F1071D}</Project>
+      <Name>Epi.Web.WCF.SurveyService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

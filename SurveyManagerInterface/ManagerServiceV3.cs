@@ -19,6 +19,7 @@ using Epi.Web.Common.Security;
 
 namespace Epi.Web.WCF.SurveyService
 {
+    [DataServiceAuthorization]
     public class ManagerServiceV3 : ManagerServiceV2, IManagerServiceV3
     {
        public void UpdateRecordStatus(SurveyAnswerRequest pRequestMessage)

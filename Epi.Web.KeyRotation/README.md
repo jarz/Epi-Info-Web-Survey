@@ -15,6 +15,29 @@ This console tool creates deployment key material and moves an existing deployme
 | `KeyForConnectionStringPassphrase`, `KeyForConnectionStringSalt`, `KeyForConnectionStringVector` | Required. The vector must be exactly 16 ASCII characters. |
 | `AdminKey` | Optional. The encrypted admin key GUID used by the publishing service. Leave it empty to disable admin operations. |
 | `TokenPassPhrase`, `TokenSaltValue`, `TokenInitVector` | Only needed when `ViewRecordsURL` is used. The application at that URL must decrypt tokens with the same values. |
+| `DataServiceSharedKey` | Required by remote WCF callers. Use a unique random 64-character hexadecimal key per deployment, and configure the same value in the service host and every caller. |
+
+## WCF service authorization
+
+The DataService and ManagerService WCF versions reject every SOAP request unless it includes the configured
+`DataServiceSharedKey` header over HTTPS. The web client and Survey Manager desktop client add this header;
+both require the key to be configured and the endpoint URL to use HTTPS. The desktop client uses normal
+certificate validation and does not accept untrusted certificates. The publish-host template disables
+metadata publishing and leaves the key empty, so it denies requests until deployment configuration is complete.
+
+Generate a key with a cryptographic random-number generator and keep it out of source control:
+
+```powershell
+$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+$bytes = New-Object byte[] 32
+$rng.GetBytes($bytes)
+$dataServiceSharedKey = -join ($bytes | ForEach-Object { $_.ToString('x2') })
+$rng.Dispose()
+```
+
+Set the resulting value in the protected configuration of the WCF host and each remote client. Do not reuse
+the key across deployments. Integrated in-process web mode does not use this SOAP credential. Hosted IIS/WCF
+validation is still required before deploying the change.
 
 ## New deployment
 

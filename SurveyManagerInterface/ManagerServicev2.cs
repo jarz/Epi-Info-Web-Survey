@@ -18,6 +18,7 @@ using System.Configuration;
 using Epi.Web.Common.Security;
 namespace Epi.Web.WCF.SurveyService
     {
+    [DataServiceAuthorization]
     public class ManagerServiceV2 : ManagerService, IManagerServiceV2
         {
         public PreFilledAnswerResponse SetSurveyAnswer(PreFilledAnswerRequest request)
